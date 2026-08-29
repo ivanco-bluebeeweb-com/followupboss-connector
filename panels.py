@@ -138,6 +138,9 @@ async def followupboss_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Recent leads -- {first.get('label') or first.get('account_name', '')}", variant="subtitle"),
         _people_section(people),
         ui.Divider(),
+        ui.Button("View pipeline health", variant="primary", size="sm", full_width=True,
+                  icon="Activity", on_click=ui.Call("__panel__followupboss_center")),
+        ui.Divider(),
         _settings_button(),
     ])
 
@@ -185,7 +188,28 @@ async def followupboss_center_panel(ctx, **kwargs) -> object:
     registered but the Panel app never fetches it at session-init without
     that flag. Text is the shared canonical wording -- must stay identical
     across every app in this situation."""
-    return ui.Empty(
-        message="Nothing to show here -- this app is managed entirely from the sidebar.",
-        icon="👈",
-    )
+    connections = await _load_connections(ctx)
+    if not connections:
+        return ui.Empty(message="Connect a Follow Up Boss account from the sidebar to see it here.", icon="🏠")
+
+    import handlers_analytics as ha
+    from schemas import GetPipelineHealthParams
+    conn_id = connections[0].get("id", "")
+    result = await ha.get_pipeline_health(ctx, GetPipelineHealthParams(connection_id=conn_id))
+    body: list[ui.UINode] = [ui.Text("Pipeline health", variant="subtitle")]
+    if result.success and result.data:
+        r = result.data
+        body.append(ui.Stats(children=[
+            ui.Stat(label="Deals", value=str(r.total_deals)),
+            ui.Stat(label="Total value", value=r.total_value or "—"),
+        ]))
+        for s in r.stages[:15]:
+            body.append(ui.Stack(direction="h", gap=2, align="center", children=[
+                ui.Badge(label=str(s.deal_count), color="gray"),
+                ui.Text(s.stage_name, variant="body"),
+                ui.Text(f"{s.stale_deal_count} stale", variant="caption"),
+            ]))
+    else:
+        body.append(ui.Text("Could not load pipeline health.", variant="caption"))
+
+    return ui.Stack(direction="v", gap=3, align="stretch", children=body)
