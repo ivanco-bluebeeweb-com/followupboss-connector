@@ -50,6 +50,8 @@ class ConnectionEntity(sdl.Entity):
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ConnectionEntity] = Field(default_factory=list)
 
 
@@ -58,6 +60,8 @@ class DisconnectParams(BaseModel):
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     ok: bool = False
     detail: str = ""
 
@@ -83,6 +87,7 @@ class ListPeopleParams(BaseModel):
 
 
 class PersonEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     first_name: str = ""
@@ -99,6 +104,8 @@ class PersonEntity(sdl.Entity):
 
 
 class PersonList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[PersonEntity] = Field(default_factory=list)
     total: int = 0
 
@@ -178,6 +185,7 @@ class ListEventsParams(BaseModel):
 
 
 class EventEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     person_id: str = ""
     type: str = ""
@@ -187,6 +195,8 @@ class EventEntity(sdl.Entity):
 
 
 class EventList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[EventEntity] = Field(default_factory=list)
 
 
@@ -205,6 +215,7 @@ class ListDealsParams(BaseModel):
 
 
 class DealEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     price: str = ""
@@ -218,6 +229,8 @@ class DealEntity(sdl.Entity):
 
 
 class DealList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[DealEntity] = Field(default_factory=list)
     total: int = 0
 
@@ -257,18 +270,22 @@ class ListPipelinesParams(BaseModel):
 
 
 class PipelineStage(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     order: int = 0
 
 
 class PipelineEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     stages: list[PipelineStage] = Field(default_factory=list)
 
 
 class PipelineList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[PipelineEntity] = Field(default_factory=list)
 
 
@@ -285,6 +302,7 @@ class ListNotesParams(BaseModel):
 
 
 class NoteEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     subject: str = ""
     body: str = ""
@@ -294,6 +312,8 @@ class NoteEntity(sdl.Entity):
 
 
 class NoteList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[NoteEntity] = Field(default_factory=list)
 
 
@@ -332,6 +352,7 @@ class ListTasksParams(BaseModel):
 
 
 class TaskEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     person_id: str = ""
@@ -343,6 +364,8 @@ class TaskEntity(sdl.Entity):
 
 
 class TaskList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[TaskEntity] = Field(default_factory=list)
 
 
@@ -382,6 +405,7 @@ class ListCallsParams(BaseModel):
 
 
 class CallEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     person_id: str = ""
     user_id: str = ""
@@ -393,6 +417,8 @@ class CallEntity(sdl.Entity):
 
 
 class CallList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[CallEntity] = Field(default_factory=list)
 
 
@@ -419,6 +445,7 @@ class ListTextMessagesParams(BaseModel):
 
 
 class TextMessageEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     person_id: str = ""
     message: str = ""
@@ -427,6 +454,8 @@ class TextMessageEntity(sdl.Entity):
 
 
 class TextMessageList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[TextMessageEntity] = Field(default_factory=list)
 
 
@@ -442,12 +471,15 @@ class ListTextMessageTemplatesParams(BaseModel):
 
 
 class TextMessageTemplateEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     message: str = ""
 
 
 class TextMessageTemplateList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[TextMessageTemplateEntity] = Field(default_factory=list)
 
 
@@ -495,6 +527,8 @@ class AppointmentEntity(sdl.Entity):
 
 
 class AppointmentList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AppointmentEntity] = Field(default_factory=list)
 
 
@@ -528,11 +562,14 @@ class ListAppointmentTypesParams(BaseModel):
 
 
 class AppointmentTypeEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
 
 
 class AppointmentTypeList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AppointmentTypeEntity] = Field(default_factory=list)
 
 
@@ -541,12 +578,15 @@ class ListAppointmentOutcomesParams(BaseModel):
 
 
 class AppointmentOutcomeEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     is_held: bool = False
 
 
 class AppointmentOutcomeList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AppointmentOutcomeEntity] = Field(default_factory=list)
 
 
@@ -560,6 +600,7 @@ class ListCustomFieldsParams(BaseModel):
 
 
 class CustomFieldEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     label: str = ""
@@ -569,6 +610,8 @@ class CustomFieldEntity(sdl.Entity):
 
 
 class CustomFieldList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[CustomFieldEntity] = Field(default_factory=list)
 
 
@@ -607,6 +650,7 @@ class ListUsersParams(BaseModel):
 
 
 class UserEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     email: str = ""
@@ -615,6 +659,8 @@ class UserEntity(sdl.Entity):
 
 
 class UserList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[UserEntity] = Field(default_factory=list)
 
 
@@ -623,12 +669,15 @@ class ListTeamsParams(BaseModel):
 
 
 class TeamEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     member_count: int = 0
 
 
 class TeamList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[TeamEntity] = Field(default_factory=list)
 
 
@@ -637,11 +686,14 @@ class ListPondsParams(BaseModel):
 
 
 class PondEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
 
 
 class PondList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[PondEntity] = Field(default_factory=list)
 
 
@@ -655,6 +707,7 @@ class ListWebhooksParams(BaseModel):
 
 
 class WebhookEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     event: str = ""
     url: str = ""
@@ -662,6 +715,8 @@ class WebhookEntity(sdl.Entity):
 
 
 class WebhookList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[WebhookEntity] = Field(default_factory=list)
 
 
@@ -686,12 +741,15 @@ class ListSmartListsParams(BaseModel):
 
 
 class SmartListEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     person_count: int = 0
 
 
 class SmartListList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[SmartListEntity] = Field(default_factory=list)
 
 
@@ -713,6 +771,7 @@ class ListPersonRelationshipsParams(BaseModel):
 
 
 class RelationshipEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     person_id: str = ""
     related_person_id: str = ""
@@ -721,6 +780,8 @@ class RelationshipEntity(sdl.Entity):
 
 
 class RelationshipList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[RelationshipEntity] = Field(default_factory=list)
 
 
@@ -746,6 +807,7 @@ class ListActionPlansParams(BaseModel):
 
 
 class ActionPlanEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     is_active: bool = True
@@ -753,6 +815,8 @@ class ActionPlanEntity(sdl.Entity):
 
 
 class ActionPlanList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ActionPlanEntity] = Field(default_factory=list)
 
 
@@ -773,6 +837,7 @@ class ListAutomationsParams(BaseModel):
 
 
 class AutomationEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     trigger: str = ""
@@ -780,6 +845,8 @@ class AutomationEntity(sdl.Entity):
 
 
 class AutomationList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AutomationEntity] = Field(default_factory=list)
 
 
@@ -799,6 +866,7 @@ class ListEmailTemplatesParams(BaseModel):
 
 
 class EmailTemplateEntity(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     subject: str = ""
@@ -806,6 +874,8 @@ class EmailTemplateEntity(sdl.Entity):
 
 
 class EmailTemplateList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[EmailTemplateEntity] = Field(default_factory=list)
 
 
@@ -822,6 +892,8 @@ class CreateEmailTemplateParams(BaseModel):
 
 
 class IdentityEntity(sdl.Entity):
+    id: str = ""
+    title: str = ""
     account_name: str = ""
     user_name: str = ""
     user_email: str = ""
@@ -844,6 +916,8 @@ class AuditLeadResponseParams(BaseModel):
 
 
 class LeadResponseFlag(sdl.Entity):
+    id: str = ""
+    title: str = ""
     person_id: str = ""
     name: str = ""
     assigned_to: str = ""
@@ -853,6 +927,8 @@ class LeadResponseFlag(sdl.Entity):
 
 
 class LeadResponseReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[LeadResponseFlag] = Field(default_factory=list)
     total_leads_checked: int = 0
     total_flagged: int = 0
@@ -865,6 +941,8 @@ class GetPipelineHealthParams(BaseModel):
 
 
 class StageHealth(sdl.Entity):
+    id: str = ""
+    title: str = ""
     stage_name: str = ""
     deal_count: int = 0
     total_value: str = ""
@@ -872,6 +950,8 @@ class StageHealth(sdl.Entity):
 
 
 class PipelineHealthReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     pipeline_name: str = ""
     stages: list[StageHealth] = Field(default_factory=list)
     total_deals: int = 0
@@ -884,6 +964,8 @@ class GetOverdueTasksReportParams(BaseModel):
 
 
 class OverdueTaskEntity(sdl.Entity):
+    id: str = ""
+    title: str = ""
     task_id: str = ""
     name: str = ""
     person_id: str = ""
@@ -894,6 +976,8 @@ class OverdueTaskEntity(sdl.Entity):
 
 
 class OverdueTasksReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[OverdueTaskEntity] = Field(default_factory=list)
     total_overdue: int = 0
 
@@ -904,6 +988,8 @@ class GetAgentActivityReportParams(BaseModel):
 
 
 class AgentActivityEntity(sdl.Entity):
+    id: str = ""
+    title: str = ""
     user_id: str = ""
     name: str = ""
     calls_logged: int = 0
@@ -914,6 +1000,8 @@ class AgentActivityEntity(sdl.Entity):
 
 
 class AgentActivityReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AgentActivityEntity] = Field(default_factory=list)
     days_back: int = 0
 
@@ -925,6 +1013,8 @@ class GetStaleLeadsReportParams(BaseModel):
 
 
 class StaleLeadEntity(sdl.Entity):
+    id: str = ""
+    title: str = ""
     person_id: str = ""
     name: str = ""
     stage: str = ""
@@ -934,5 +1024,7 @@ class StaleLeadEntity(sdl.Entity):
 
 
 class StaleLeadsReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[StaleLeadEntity] = Field(default_factory=list)
     total_flagged: int = 0
