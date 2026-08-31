@@ -52,7 +52,7 @@ async def list_notes(ctx, params: ListNotesParams) -> ActionResult:
     items = [NoteEntity(id=str(n.get("id", "")), subject=n.get("subject", ""), body=n.get("body", ""),
                          person_id=str(n.get("personId", "")), created_by=str(n.get("createdBy", "")),
                          created=n.get("created", "")) for n in notes]
-    return ActionResult.success(NoteList(items=items))
+    return ActionResult.success(NoteList(items=items), summary="Notes listed.")
 
 
 @chat.function(
@@ -78,7 +78,7 @@ async def create_note(ctx, params: CreateNoteParams) -> ActionResult:
         return ActionResult.error(e.reason)
     return ActionResult.success(NoteEntity(id=str(note.get("id", "")), subject=note.get("subject", ""),
                                             body=note.get("body", ""), person_id=str(note.get("personId", "")),
-                                            created=note.get("created", "")))
+                                            created=note.get("created", "")), summary="Note created.")
 
 
 @chat.function(
@@ -107,7 +107,7 @@ async def update_note(ctx, params: UpdateNoteParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(NoteEntity(id=str(note.get("id", "")), subject=note.get("subject", ""),
-                                            body=note.get("body", "")))
+                                            body=note.get("body", "")), summary="Note updated.")
 
 
 @chat.function(
@@ -128,7 +128,7 @@ async def delete_note(ctx, params: DeleteNoteParams) -> ActionResult:
         await fc.delete_note(ctx, conn, params.note_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Note {params.note_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Note {params.note_id} deleted."), summary="Note deleted.")
 
 
 # -- Tasks -------------------------------------------------------------
@@ -161,7 +161,7 @@ async def list_tasks(ctx, params: ListTasksParams) -> ActionResult:
                          assigned_to=str(t.get("assignedUserId", "")), due_date=t.get("dueDate", ""),
                          is_completed=bool(t.get("isCompleted", False)), type=t.get("type", ""),
                          created=t.get("created", "")) for t in tasks]
-    return ActionResult.success(TaskList(items=items))
+    return ActionResult.success(TaskList(items=items), summary="Tasks listed.")
 
 
 @chat.function(
@@ -190,7 +190,7 @@ async def create_task(ctx, params: CreateTaskParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(TaskEntity(id=str(task.get("id", "")), name=task.get("name", ""),
-                                            due_date=task.get("dueDate", "")))
+                                            due_date=task.get("dueDate", "")), summary="Task created.")
 
 
 @chat.function(
@@ -221,7 +221,7 @@ async def update_task(ctx, params: UpdateTaskParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(TaskEntity(id=str(task.get("id", "")), name=task.get("name", ""),
-                                            is_completed=bool(task.get("isCompleted", False))))
+                                            is_completed=bool(task.get("isCompleted", False))), summary="Task updated.")
 
 
 @chat.function(
@@ -242,7 +242,7 @@ async def delete_task(ctx, params: DeleteTaskParams) -> ActionResult:
         await fc.delete_task(ctx, conn, params.task_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Task {params.task_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Task {params.task_id} deleted."), summary="Task deleted.")
 
 
 # -- Calls ---------------------------------------------------------------
@@ -273,7 +273,7 @@ async def list_calls(ctx, params: ListCallsParams) -> ActionResult:
                          user_id=str(c.get("userId", "")), duration=int(c.get("duration", 0) or 0),
                          outcome=c.get("outcome", ""), note=c.get("note", ""),
                          is_incoming=bool(c.get("isIncoming", False)), created=c.get("created", "")) for c in calls]
-    return ActionResult.success(CallList(items=items))
+    return ActionResult.success(CallList(items=items), summary="Calls listed.")
 
 
 @chat.function(
@@ -306,7 +306,7 @@ async def log_call(ctx, params: LogCallParams) -> ActionResult:
     return ActionResult.success(CallEntity(id=str(call.get("id", "")), person_id=str(call.get("personId", "")),
                  user_id=str(call.get("userId", "")), duration=int(call.get("duration", 0) or 0),
                  outcome=call.get("outcome", ""), note=call.get("note", ""),
-                 is_incoming=bool(call.get("isIncoming", False)), created=call.get("created", "")))
+                 is_incoming=bool(call.get("isIncoming", False)), created=call.get("created", "")), summary="Log call done.")
 
 
 # -- Text Messages ---------------------------------------------------------
@@ -334,7 +334,7 @@ async def list_text_messages(ctx, params: ListTextMessagesParams) -> ActionResul
     items = [TextMessageEntity(id=str(t.get("id", "")), person_id=str(t.get("personId", "")),
                                 message=t.get("message", ""), is_incoming=bool(t.get("isIncoming", False)),
                                 created=t.get("created", "")) for t in texts]
-    return ActionResult.success(TextMessageList(items=items))
+    return ActionResult.success(TextMessageList(items=items), summary="Text messages listed.")
 
 
 @chat.function(
@@ -359,7 +359,7 @@ async def send_text_message(ctx, params: SendTextMessageParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(TextMessageEntity(id=str(text.get("id", "")), person_id=str(text.get("personId", "")),
-                 message=text.get("message", ""), is_incoming=False, created=text.get("created", "")))
+                 message=text.get("message", ""), is_incoming=False, created=text.get("created", "")), summary="Text message send requested.")
 
 
 @chat.function(
@@ -381,7 +381,7 @@ async def list_text_message_templates(ctx, params: ListTextMessageTemplatesParam
         return ActionResult.error(e.reason)
     items = [TextMessageTemplateEntity(id=str(t.get("id", "")), name=t.get("name", ""),
                                         message=t.get("message", "")) for t in templates]
-    return ActionResult.success(TextMessageTemplateList(items=items))
+    return ActionResult.success(TextMessageTemplateList(items=items), summary="Text message templates listed.")
 
 
 @chat.function(
@@ -403,7 +403,7 @@ async def create_text_message_template(ctx, params: CreateTextMessageTemplatePar
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(TextMessageTemplateEntity(id=str(t.get("id", "")), name=t.get("name", ""),
-                 message=t.get("message", "")))
+                 message=t.get("message", "")), summary="Text message template created.")
 
 
 @chat.function(
@@ -432,7 +432,7 @@ async def update_text_message_template(ctx, params: UpdateTextMessageTemplatePar
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(TextMessageTemplateEntity(id=str(t.get("id", "")), name=t.get("name", ""),
-                 message=t.get("message", "")))
+                 message=t.get("message", "")), summary="Text message template updated.")
 
 
 @chat.function(
@@ -453,7 +453,7 @@ async def delete_text_message_template(ctx, params: DeleteTextMessageTemplatePar
         await fc.delete_text_message_template(ctx, conn, params.template_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Template {params.template_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Template {params.template_id} deleted."), summary="Text message template deleted.")
 
 
 # -- Appointments ------------------------------------------------------
@@ -484,7 +484,7 @@ async def list_appointments(ctx, params: ListAppointmentsParams) -> ActionResult
                                 person_id=str(a.get("personId", "")), user_id=str(a.get("assignedUserId", "")),
                                 start=a.get("start", ""), end=a.get("end", ""), type=a.get("type", ""),
                                 outcome=a.get("outcome", ""), location=a.get("location", "")) for a in appts]
-    return ActionResult.success(AppointmentList(items=items))
+    return ActionResult.success(AppointmentList(items=items), summary="Appointments listed.")
 
 
 @chat.function(
@@ -517,7 +517,7 @@ async def create_appointment(ctx, params: CreateAppointmentParams) -> ActionResu
     return ActionResult.success(AppointmentEntity(id=str(appt.get("id", "")), title=appt.get("title", ""),
                  person_id=str(appt.get("personId", "")), user_id=str(appt.get("assignedUserId", "")),
                  start=appt.get("start", ""), end=appt.get("end", ""), type=appt.get("type", ""),
-                 outcome=appt.get("outcome", ""), location=appt.get("location", "")))
+                 outcome=appt.get("outcome", ""), location=appt.get("location", "")), summary="Appointment created.")
 
 
 @chat.function(
@@ -552,7 +552,7 @@ async def update_appointment(ctx, params: UpdateAppointmentParams) -> ActionResu
     return ActionResult.success(AppointmentEntity(id=str(appt.get("id", "")), title=appt.get("title", ""),
                  person_id=str(appt.get("personId", "")), user_id=str(appt.get("assignedUserId", "")),
                  start=appt.get("start", ""), end=appt.get("end", ""), type=appt.get("type", ""),
-                 outcome=appt.get("outcome", ""), location=appt.get("location", "")))
+                 outcome=appt.get("outcome", ""), location=appt.get("location", "")), summary="Appointment updated.")
 
 
 @chat.function(
@@ -573,7 +573,7 @@ async def delete_appointment(ctx, params: DeleteAppointmentParams) -> ActionResu
         await fc.delete_appointment(ctx, conn, params.appointment_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Appointment {params.appointment_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Appointment {params.appointment_id} deleted."), summary="Appointment deleted.")
 
 
 @chat.function(
@@ -594,7 +594,7 @@ async def list_appointment_types(ctx, params: ListAppointmentTypesParams) -> Act
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     items = [AppointmentTypeEntity(id=str(t.get("id", "")), name=t.get("name", "")) for t in types_]
-    return ActionResult.success(AppointmentTypeList(items=items))
+    return ActionResult.success(AppointmentTypeList(items=items), summary="Appointment types listed.")
 
 
 @chat.function(
@@ -616,7 +616,7 @@ async def list_appointment_outcomes(ctx, params: ListAppointmentOutcomesParams) 
         return ActionResult.error(e.reason)
     items = [AppointmentOutcomeEntity(id=str(o.get("id", "")), name=o.get("name", ""),
                                        is_held=bool(o.get("isHeld", False))) for o in outcomes]
-    return ActionResult.success(AppointmentOutcomeList(items=items))
+    return ActionResult.success(AppointmentOutcomeList(items=items), summary="Appointment outcomes listed.")
 
 
 @chat.function(
@@ -637,7 +637,7 @@ async def list_appointment_types(ctx, params: ListAppointmentTypesParams) -> Act
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     items = [AppointmentTypeEntity(id=str(t.get("id", "")), name=t.get("name", "")) for t in types]
-    return ActionResult.success(AppointmentTypeList(items=items))
+    return ActionResult.success(AppointmentTypeList(items=items), summary="Appointment types listed.")
 
 
 @chat.function(
@@ -658,4 +658,4 @@ async def list_appointment_outcomes(ctx, params: ListAppointmentOutcomesParams) 
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     items = [AppointmentOutcomeEntity(id=str(o.get("id", "")), name=o.get("name", "")) for o in outcomes]
-    return ActionResult.success(AppointmentOutcomeList(items=items))
+    return ActionResult.success(AppointmentOutcomeList(items=items), summary="Appointment outcomes listed.")

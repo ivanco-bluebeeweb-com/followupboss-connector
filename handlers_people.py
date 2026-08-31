@@ -83,7 +83,7 @@ async def list_people(ctx, params: ListPeopleParams) -> ActionResult:
         people = await fc.list_people(ctx, conn, **filters)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(PersonList(items=[_person_entity(p) for p in people], total=len(people)))
+    return ActionResult.success(PersonList(items=[_person_entity(p) for p in people], total=len(people)), summary="People listed.")
 
 
 @chat.function(
@@ -103,7 +103,7 @@ async def get_person(ctx, params: GetPersonParams) -> ActionResult:
         person = await fc.get_person(ctx, conn, params.person_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_person_entity(person))
+    return ActionResult.success(_person_entity(person), summary="Person retrieved.")
 
 
 @chat.function(
@@ -139,7 +139,7 @@ async def create_person(ctx, params: CreatePersonParams) -> ActionResult:
         person = await fc.create_person(ctx, conn, payload)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_person_entity(person))
+    return ActionResult.success(_person_entity(person), summary="Person created.")
 
 
 @chat.function(
@@ -177,7 +177,7 @@ async def update_person(ctx, params: UpdatePersonParams) -> ActionResult:
         person = await fc.update_person(ctx, conn, params.person_id, payload)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_person_entity(person))
+    return ActionResult.success(_person_entity(person), summary="Person updated.")
 
 
 @chat.function(
@@ -198,7 +198,7 @@ async def delete_person(ctx, params: DeletePersonParams) -> ActionResult:
         await fc.delete_person(ctx, conn, params.person_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} deleted."), summary="Person deleted.")
 
 
 @chat.function(
@@ -257,7 +257,7 @@ async def create_lead_event(ctx, params: CreateLeadEventParams) -> ActionResult:
         source=params.source,
         message=params.message,
         created=result.get("created", ""),
-    ))
+    ), summary="Lead event created.")
 
 
 @chat.function(
@@ -291,4 +291,4 @@ async def list_events(ctx, params: ListEventsParams) -> ActionResult:
             message=e.get("message", ""),
             created=e.get("created", ""),
         ) for e in events
-    ]))
+    ]), summary="Events listed.")

@@ -52,7 +52,7 @@ async def list_custom_fields(ctx, params: ListCustomFieldsParams) -> ActionResul
     items = [CustomFieldEntity(id=str(f.get("id", "")), name=f.get("name", ""), label=f.get("label", ""),
                                 type=f.get("type", ""), is_recurring=bool(f.get("isRecurring", False)),
                                 choices=", ".join(f.get("choices") or [])) for f in fields]
-    return ActionResult.success(CustomFieldList(items=items))
+    return ActionResult.success(CustomFieldList(items=items), summary="Custom fields listed.")
 
 
 @chat.function(
@@ -84,7 +84,7 @@ async def create_custom_field(ctx, params: CreateCustomFieldParams) -> ActionRes
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(CustomFieldEntity(id=str(field.get("id", "")), name=field.get("name", ""),
-                 label=field.get("label", ""), type=field.get("type", "")))
+                 label=field.get("label", ""), type=field.get("type", "")), summary="Custom field created.")
 
 
 # -- Tags ----------------------------------------------------------------
@@ -107,7 +107,7 @@ async def add_person_tags(ctx, params: AddPersonTagsParams) -> ActionResult:
         await fc.add_person_tags(ctx, conn, params.person_id, params.tags)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Added tags to person {params.person_id}."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Added tags to person {params.person_id}."), summary="Person tags created.")
 
 
 @chat.function(
@@ -128,7 +128,7 @@ async def remove_person_tags(ctx, params: RemovePersonTagsParams) -> ActionResul
         await fc.remove_person_tags(ctx, conn, params.person_id, params.tags)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Removed tags from person {params.person_id}."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Removed tags from person {params.person_id}."), summary="Person tags deleted.")
 
 
 # -- Users / Teams / Ponds -------------------------------------------------
@@ -152,7 +152,7 @@ async def list_users(ctx, params: ListUsersParams) -> ActionResult:
         return ActionResult.error(e.reason)
     items = [UserEntity(id=str(u.get("id", "")), name=u.get("name", ""), email=u.get("email", ""),
                          role=u.get("role", ""), is_active=bool(u.get("isActive", True))) for u in users]
-    return ActionResult.success(UserList(items=items))
+    return ActionResult.success(UserList(items=items), summary="Users listed.")
 
 
 @chat.function(
@@ -174,7 +174,7 @@ async def list_teams(ctx, params: ListTeamsParams) -> ActionResult:
         return ActionResult.error(e.reason)
     items = [TeamEntity(id=str(t.get("id", "")), name=t.get("name", ""),
                          member_count=len(t.get("users") or [])) for t in teams]
-    return ActionResult.success(TeamList(items=items))
+    return ActionResult.success(TeamList(items=items), summary="Teams listed.")
 
 
 @chat.function(
@@ -195,7 +195,7 @@ async def list_ponds(ctx, params: ListPondsParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     items = [PondEntity(id=str(p.get("id", "")), name=p.get("name", "")) for p in ponds]
-    return ActionResult.success(PondList(items=items))
+    return ActionResult.success(PondList(items=items), summary="Ponds listed.")
 
 
 # -- Webhooks (Owner-only) -------------------------------------------------
@@ -219,7 +219,7 @@ async def list_webhooks(ctx, params: ListWebhooksParams) -> ActionResult:
         return ActionResult.error(e.reason)
     items = [WebhookEntity(id=str(h.get("id", "")), event=h.get("event", ""), url=h.get("url", ""),
                             is_active=bool(h.get("isActive", True))) for h in hooks]
-    return ActionResult.success(WebhookList(items=items))
+    return ActionResult.success(WebhookList(items=items), summary="Webhooks listed.")
 
 
 @chat.function(
@@ -241,7 +241,7 @@ async def create_webhook(ctx, params: CreateWebhookParams) -> ActionResult:
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(WebhookEntity(id=str(hook.get("id", "")), event=hook.get("event", ""),
-                 url=hook.get("url", ""), is_active=True))
+                 url=hook.get("url", ""), is_active=True), summary="Webhook created.")
 
 
 @chat.function(
@@ -262,7 +262,7 @@ async def delete_webhook(ctx, params: DeleteWebhookParams) -> ActionResult:
         await fc.delete_webhook(ctx, conn, params.webhook_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Webhook {params.webhook_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Webhook {params.webhook_id} deleted."), summary="Webhook deleted.")
 
 
 # -- Smart Lists ------------------------------------------------------------
@@ -286,7 +286,7 @@ async def list_smart_lists(ctx, params: ListSmartListsParams) -> ActionResult:
         return ActionResult.error(e.reason)
     items = [SmartListEntity(id=str(s.get("id", "")), name=s.get("name", ""),
                               person_count=int(s.get("personCount", 0) or 0)) for s in lists]
-    return ActionResult.success(SmartListList(items=items))
+    return ActionResult.success(SmartListList(items=items), summary="Smart lists listed.")
 
 
 @chat.function(
@@ -310,7 +310,7 @@ async def get_smart_list_people(ctx, params: GetSmartListPeopleParams) -> Action
                            first_name=p.get("firstName", ""), last_name=p.get("lastName", ""),
                            stage=(p.get("stage") or {}).get("name", "") if isinstance(p.get("stage"), dict) else str(p.get("stage", "")),
                            source=p.get("source", "")) for p in people]
-    return ActionResult.success(PersonList(items=items, total=len(items)))
+    return ActionResult.success(PersonList(items=items, total=len(items)), summary="Smart list people retrieved.")
 
 
 # -- Person Relationships ---------------------------------------------------
@@ -335,7 +335,7 @@ async def list_person_relationships(ctx, params: ListPersonRelationshipsParams) 
     items = [RelationshipEntity(id=str(r.get("id", "")), person_id=str(r.get("personId", "")),
                                  related_person_id=str(r.get("relatedPersonId", "")),
                                  related_name=r.get("relatedName", ""), type=r.get("type", "")) for r in rels]
-    return ActionResult.success(RelationshipList(items=items))
+    return ActionResult.success(RelationshipList(items=items), summary="Person relationships listed.")
 
 
 @chat.function(
@@ -358,7 +358,7 @@ async def create_person_relationship(ctx, params: CreatePersonRelationshipParams
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(RelationshipEntity(id=str(rel.get("id", "")), person_id=params.person_id,
-                 related_person_id=params.related_person_id, type=params.type))
+                 related_person_id=params.related_person_id, type=params.type), summary="Person relationship created.")
 
 
 @chat.function(
@@ -379,7 +379,7 @@ async def delete_person_relationship(ctx, params: DeletePersonRelationshipParams
         await fc.delete_relationship(ctx, conn, params.relationship_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Relationship {params.relationship_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Relationship {params.relationship_id} deleted."), summary="Person relationship deleted.")
 
 
 # -- Action Plans (legacy) / Automations 2.0 --------------------------------
@@ -404,7 +404,7 @@ async def list_action_plans(ctx, params: ListActionPlansParams) -> ActionResult:
     items = [ActionPlanEntity(id=str(p.get("id", "")), name=p.get("name", ""),
                                is_active=bool(p.get("isActive", True)),
                                step_count=int(p.get("stepCount", 0) or 0)) for p in plans]
-    return ActionResult.success(ActionPlanList(items=items))
+    return ActionResult.success(ActionPlanList(items=items), summary="Action plans listed.")
 
 
 @chat.function(
@@ -425,7 +425,7 @@ async def apply_action_plan(ctx, params: ApplyActionPlanParams) -> ActionResult:
         await fc.apply_action_plan(ctx, conn, params.person_id, params.action_plan_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} enrolled in Action Plan {params.action_plan_id}."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} enrolled in Action Plan {params.action_plan_id}."), summary="Apply action plan done.")
 
 
 @chat.function(
@@ -446,7 +446,7 @@ async def remove_action_plan(ctx, params: RemoveActionPlanParams) -> ActionResul
         await fc.remove_action_plan(ctx, conn, params.person_id, params.action_plan_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} removed from Action Plan {params.action_plan_id}."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Person {params.person_id} removed from Action Plan {params.action_plan_id}."), summary="Action plan deleted.")
 
 
 @chat.function(
@@ -468,7 +468,7 @@ async def list_automations(ctx, params: ListAutomationsParams) -> ActionResult:
         return ActionResult.error(e.reason)
     items = [AutomationEntity(id=str(a.get("id", "")), name=a.get("name", ""), trigger=a.get("trigger", ""),
                                is_active=bool(a.get("isActive", True))) for a in autos]
-    return ActionResult.success(AutomationList(items=items))
+    return ActionResult.success(AutomationList(items=items), summary="Automations listed.")
 
 
 @chat.function(
@@ -489,7 +489,7 @@ async def trigger_automation(ctx, params: TriggerAutomationParams) -> ActionResu
         await fc.trigger_automation(ctx, conn, params.automation_id, params.person_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Automation {params.automation_id} triggered for person {params.person_id}."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Automation {params.automation_id} triggered for person {params.person_id}."), summary="Automation trigger requested.")
 
 
 # -- Email Templates ---------------------------------------------------
@@ -513,7 +513,7 @@ async def list_email_templates(ctx, params: ListEmailTemplatesParams) -> ActionR
         return ActionResult.error(e.reason)
     items = [EmailTemplateEntity(id=str(t.get("id", "")), name=t.get("name", ""),
                                   subject=t.get("subject", ""), body=t.get("body", "")) for t in templates]
-    return ActionResult.success(EmailTemplateList(items=items))
+    return ActionResult.success(EmailTemplateList(items=items), summary="Email templates listed.")
 
 
 @chat.function(
@@ -536,4 +536,4 @@ async def create_email_template(ctx, params: CreateEmailTemplateParams) -> Actio
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
     return ActionResult.success(EmailTemplateEntity(id=str(template.get("id", "")), name=params.name,
-                 subject=params.subject, body=params.body))
+                 subject=params.subject, body=params.body), summary="Email template created.")

@@ -100,7 +100,7 @@ async def connect_followupboss(ctx, params: ConnectFollowUpBossParams) -> Action
     }
     conns.append(entry)
     await _save_connections(ctx, conns)
-    return ActionResult.success(_entity(entry), message=f"Connected to {entry['label']} as {entry['role'] or 'user'}.")
+    return ActionResult.success(_entity(entry), message=f"Connected to {entry['label']} as {entry['role'] or 'user'}.", summary="Followupboss connected.")
 
 
 @chat.function(
@@ -123,7 +123,7 @@ async def disconnect_followupboss(ctx, params: DisconnectParams) -> ActionResult
     if len(remaining) == len(conns):
         return ActionResult.error("Connection not found.")
     await _save_connections(ctx, remaining)
-    return ActionResult.success(DeleteResult(ok=True, detail="Disconnected."), message="Follow Up Boss account disconnected.")
+    return ActionResult.success(DeleteResult(ok=True, detail="Disconnected."), message="Follow Up Boss account disconnected.", summary="Followupboss disconnected.")
 
 
 @chat.function(
@@ -137,7 +137,7 @@ async def disconnect_followupboss(ctx, params: DisconnectParams) -> ActionResult
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List the connected Follow Up Boss accounts."""
     conns = await _load_connections(ctx)
-    return ActionResult.success(ConnectionList(items=[_entity(c) for c in conns]))
+    return ActionResult.success(ConnectionList(items=[_entity(c) for c in conns]), summary="Connections listed.")
 
 
 @chat.function(
@@ -164,4 +164,4 @@ async def get_identity(ctx, params: NoParams) -> ActionResult:
         user_email=identity.get("user_email", ""),
         role=identity.get("role", ""),
         is_owner=identity.get("role", "").lower() == "owner",
-    ))
+    ), summary="Identity retrieved.")

@@ -59,7 +59,7 @@ async def list_deals(ctx, params: ListDealsParams) -> ActionResult:
         deals = await fc.list_deals(ctx, conn, **filters)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DealList(items=[_deal_entity(d) for d in deals], total=len(deals)))
+    return ActionResult.success(DealList(items=[_deal_entity(d) for d in deals], total=len(deals)), summary="Deals listed.")
 
 
 @chat.function(
@@ -79,7 +79,7 @@ async def get_deal(ctx, params: GetDealParams) -> ActionResult:
         deal = await fc.get_deal(ctx, conn, params.deal_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_deal_entity(deal))
+    return ActionResult.success(_deal_entity(deal), summary="Deal retrieved.")
 
 
 @chat.function(
@@ -111,7 +111,7 @@ async def create_deal(ctx, params: CreateDealParams) -> ActionResult:
         deal = await fc.create_deal(ctx, conn, payload)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_deal_entity(deal))
+    return ActionResult.success(_deal_entity(deal), summary="Deal created.")
 
 
 @chat.function(
@@ -143,7 +143,7 @@ async def update_deal(ctx, params: UpdateDealParams) -> ActionResult:
         deal = await fc.update_deal(ctx, conn, params.deal_id, payload)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(_deal_entity(deal))
+    return ActionResult.success(_deal_entity(deal), summary="Deal updated.")
 
 
 @chat.function(
@@ -164,7 +164,7 @@ async def delete_deal(ctx, params: DeleteDealParams) -> ActionResult:
         await fc.delete_deal(ctx, conn, params.deal_id)
     except fc.ClientFail as e:
         return ActionResult.error(e.reason)
-    return ActionResult.success(DeleteResult(ok=True, detail=f"Deal {params.deal_id} deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail=f"Deal {params.deal_id} deleted."), summary="Deal deleted.")
 
 
 @chat.function(
@@ -190,4 +190,4 @@ async def list_pipelines(ctx, params: ListPipelinesParams) -> ActionResult:
             name=p.get("name", ""),
             stages=", ".join(s.get("name", "") for s in (p.get("stages") or [])),
         ) for p in pipelines
-    ]))
+    ]), summary="Pipelines listed.")

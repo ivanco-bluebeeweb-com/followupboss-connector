@@ -112,7 +112,7 @@ async def audit_lead_response(ctx, params: AuditLeadResponseParams) -> ActionRes
     return ActionResult.success(LeadResponseReport(
         items=flagged, total_leads_checked=checked, total_flagged=len(flagged),
         threshold_hours=params.hours_threshold,
-    ))
+    ), summary="Lead response audit ready.")
 
 
 @chat.function(
@@ -164,7 +164,7 @@ async def get_pipeline_health(ctx, params: GetPipelineHealthParams) -> ActionRes
     return ActionResult.success(PipelineHealthReport(
         pipeline_name=pipeline.get("name", ""), stages=list(stage_map.values()),
         total_deals=len(deals), total_value=str(total_value),
-    ))
+    ), summary="Pipeline health retrieved.")
 
 
 @chat.function(
@@ -202,7 +202,7 @@ async def get_overdue_tasks_report(ctx, params: GetOverdueTasksReportParams) -> 
             days_overdue=days_overdue,
         ))
     items.sort(key=lambda x: x.days_overdue, reverse=True)
-    return ActionResult.success(OverdueTasksReport(items=items, total_overdue=len(items)))
+    return ActionResult.success(OverdueTasksReport(items=items, total_overdue=len(items)), summary="Overdue tasks report retrieved.")
 
 
 @chat.function(
@@ -250,7 +250,7 @@ async def get_agent_activity_report(ctx, params: GetAgentActivityReportParams) -
             pass
         report_items.append(entity)
 
-    return ActionResult.success(AgentActivityReport(items=report_items, days_back=params.days_back))
+    return ActionResult.success(AgentActivityReport(items=report_items, days_back=params.days_back), summary="Agent activity report retrieved.")
 
 
 @chat.function(
@@ -292,4 +292,4 @@ async def get_stale_leads_report(ctx, params: GetStaleLeadsReportParams) -> Acti
             days_inactive=days_inactive,
         ))
     flagged.sort(key=lambda x: x.days_inactive, reverse=True)
-    return ActionResult.success(StaleLeadsReport(items=flagged, total_flagged=len(flagged)))
+    return ActionResult.success(StaleLeadsReport(items=flagged, total_flagged=len(flagged)), summary="Stale leads report retrieved.")
