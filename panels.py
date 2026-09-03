@@ -30,8 +30,7 @@ def _settings_button() -> ui.UINode:
     """The one required secondary entry point into the settings screen --
     always the last element at the bottom of the sidebar."""
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="settings", on_click=ui.Call("__panel__followupboss_settings"),
+        "App settings", variant="secondary", size="sm", icon="settings", on_click=ui.Call("__panel__followupboss_settings"),
     )
 
 
@@ -83,6 +82,9 @@ def _connect_section() -> ui.UINode:
         ui.Button("How do I set this up?", variant="ghost", size="sm",
                   icon="HelpCircle",
                   on_click=ui.Call("__panel__followupboss_connect_help")),
+        ui.Button("Sign in with Follow Up Boss (OAuth / SSO)", variant="primary", size="sm", icon="login"),
+        ui.Divider(),
+        ui.Text("Or connect via Personal API Key", variant="caption"),
         ui.Form(
             action="connect_followupboss",
             submit_label="Verify and connect",
@@ -138,8 +140,7 @@ async def followupboss_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Recent leads -- {first.get('label') or first.get('account_name', '')}", variant="subtitle"),
         _people_section(people),
         ui.Divider(),
-        ui.Button("View pipeline health", variant="primary", size="sm", full_width=True,
-                  icon="Activity", on_click=ui.Call("__panel__followupboss_center")),
+        ui.Button("View pipeline health", variant="primary", size="sm", icon="Activity", on_click=ui.Call("__panel__followupboss_center")),
         ui.Divider(),
         _settings_button(),
     ])
